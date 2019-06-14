@@ -108,7 +108,7 @@ class Response
             return;
         }
 
-        $this->success = 1 == Arr::get($result, 'response');
+        $this->success = (1 === (int) Arr::get($result, 'response'));
         $this->level = (int) Arr::get($result, 'evil_level', '');
         $this->msg = (string) Arr::get($result, 'err_msg');
     }
