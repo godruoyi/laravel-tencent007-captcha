@@ -12,6 +12,10 @@ namespace Godruoyi\Tencent007\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class ToManyAttemptException extends HttpException
+class NeedCaptchaAuthException extends HttpException
 {
+    public function __construct($statusCode = 429, $message = 'Need tencent captcha certification.')
+    {
+        parent::__construct($statusCode, $message);
+    }
 }

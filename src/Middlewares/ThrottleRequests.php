@@ -12,7 +12,7 @@ namespace Godruoyi\Tencent007\Middlewares;
 
 use Closure;
 use Godruoyi\Tencent007\Client;
-use Godruoyi\Tencent007\Exceptions\InvalidArgumentException;
+use Godruoyi\Tencent007\Exceptions\NeedCaptchaAuthException;
 use Godruoyi\Tencent007\Exceptions\RequestNotPassedException;
 use Godruoyi\Tencent007\Exceptions\ToManyAttemptException;
 use Godruoyi\Tencent007\Response as Tencent007Response;
@@ -47,7 +47,7 @@ class ThrottleRequests extends BaseThrottleRequests
             $randstr = $request->get(config('007.request_key_map.randstr', 'randstr'));
 
             if (empty($ticket) || empty($randstr)) {
-                return $this->buildInvalidArgumentResponse();
+                return $this->buildNeedAuthException();
             }
 
             $checkResponse = Client::check($ticket, $randstr, $request->ip());
@@ -78,7 +78,7 @@ class ThrottleRequests extends BaseThrottleRequests
      */
     protected function hit($key, $decayMinutes)
     {
-        return $this->limiter->hit($key, $decayMinutes);
+        return $this->limiter->hit($key, $decayMinutes * 60);
     }
 
     /**
@@ -86,9 +86,9 @@ class ThrottleRequests extends BaseThrottleRequests
      *
      * @return mixed
      */
-    protected function buildInvalidArgumentResponse()
+    protected function buildNeedAuthException()
     {
-        throw new InvalidArgumentException();
+        throw new NeedCaptchaAuthException();
     }
 
     /**
@@ -116,31 +116,5 @@ class ThrottleRequests extends BaseThrottleRequests
         if (!$added) {
             $this->cache->put($key.':passed', 1, $decayMinutes);
         }
-    }
-
-    /**
-     * Create a 'too many attempts' exception.
-     *
-     * @param string $key
-     * @param int    $maxAttempts
-     *
-     * @return \Symfony\Component\HttpKernel\Exception\HttpException
-     */
-    protected function buildException($key, $maxAttempts)
-    {
-        $retryAfter = $this->getTimeUntilNextRetry($key);
-
-        $headers = $this->getHeaders(
-            $maxAttempts,
-            $this->calculateRemainingAttempts($key, $maxAttempts, $retryAfter),
-            $retryAfter
-        );
-
-        return new ToManyAttemptException(
-            429,
-            'Too Many Attempts.',
-            null,
-            $headers
-        );
     }
 }
