@@ -15,6 +15,7 @@ use Godruoyi\Tencent007\Client;
 use Godruoyi\Tencent007\Exceptions\NeedCaptchaAuthException;
 use Godruoyi\Tencent007\Exceptions\RequestNotPassedException;
 use Godruoyi\Tencent007\Response as Tencent007Response;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Routing\Middleware\ThrottleRequests as BaseThrottleRequests;
 
 class ThrottleRequests extends BaseThrottleRequests
@@ -35,7 +36,7 @@ class ThrottleRequests extends BaseThrottleRequests
     {
         $key = $this->resolveRequestSignature($request);
 
-        if (($cache = config('007.cache')) > 0 && $this->cache->has($key.':passed')) {
+        if (($cache = config('007.cache')) > 0 && app(Cache::class)->has($key.':passed')) {
             return $next($request);
         }
 
@@ -110,10 +111,10 @@ class ThrottleRequests extends BaseThrottleRequests
      */
     protected function joinKeyToCache($key, $hour)
     {
-        $added = $this->cache->add($key.':passed', 1, $decayMinutes = ($hour * 60));
+        $added = app(Cache::class)->add($key.':passed', 1, $decayMinutes = ($hour * 60));
 
         if (!$added) {
-            $this->cache->put($key.':passed', 1, $decayMinutes);
+            app(Cache::class)->put($key.':passed', 1, $decayMinutes);
         }
     }
 }
