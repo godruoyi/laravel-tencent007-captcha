@@ -14,7 +14,6 @@ use Closure;
 use Godruoyi\Tencent007\Client;
 use Godruoyi\Tencent007\Exceptions\NeedCaptchaAuthException;
 use Godruoyi\Tencent007\Exceptions\RequestNotPassedException;
-use Godruoyi\Tencent007\Exceptions\ToManyAttemptException;
 use Godruoyi\Tencent007\Response as Tencent007Response;
 use Illuminate\Routing\Middleware\ThrottleRequests as BaseThrottleRequests;
 
