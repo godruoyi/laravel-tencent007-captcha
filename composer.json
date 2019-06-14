@@ -1,0 +1,44 @@
+{
+    "name": "godruoyi/laravel-tencent007-captcha",
+    "description": "Laravel 腾讯防水墙",
+    "license": "MIT",
+    "keywords": [
+        "tencent captcha",
+        "qq 007 captcha",
+        "腾讯防水墙",
+        "腾讯验证码",
+        "活动防刷"
+    ],
+    "homepage": "https://github.com/godruoyi/laravel-tencent007-captcha",
+    "authors": [
+        {
+            "name": "Godruoyi",
+            "email": "godruoyi@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "5.*",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "require-dev": {
+        "laravel/framework": "^5.4",
+        "mockery/mockery": "^1.2",
+        "phpunit/phpunit": "~7",
+        "orchestra/testbench": "^3.5"
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["Godruoyi\\Tencent007\\ServiceProvider"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Godruoyi\\Tencent007\\": "src"
+        }
+    }
+}
