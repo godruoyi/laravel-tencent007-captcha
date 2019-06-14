@@ -1,9 +1,11 @@
 <h1 align="center"> laravel-tencent007-captcha </h1>
 
 <p align="center">
-    <a href="https://travis-ci.org/godruoyi/tencent-cdn-refresh"><img src="https://scrutinizer-ci.com/g/godruoyi/tencent-cdn-refresh/badges/build.png?b=master" alt="Build Status"></a>
-    <a href="https://scrutinizer-ci.com/g/godruoyi/tencent-cdn-refresh/?branch=master"><img src="https://scrutinizer-ci.com/g/godruoyi/tencent-cdn-refresh/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
-    <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fgodruoyi%2Ftencent-cdn-refresh?ref=badge_shield"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgodruoyi%2Ftencent-cdn-refresh.svg?type=shield" alt="FOSSA Status"></a>
+    <a href="https://github.styleci.io/repos/191917595"><img src="https://github.styleci.io/repos/191917595/shield?branch=master" alt="StyleCI"></a>
+    <a href="https://scrutinizer-ci.com/g/godruoyi/laravel-tencent007-captcha/?branch=master"><img src="https://scrutinizer-ci.com/g/godruoyi/laravel-tencent007-captcha/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+    <a href="https://packagist.org/packages/godruoyi/laravel-tencent007-captcha"><img src="https://poser.pugx.org/godruoyi/laravel-tencent007-captcha/v/stable" alt="tencent captcha"></a>
+    <a href="https://packagist.org/packages/godruoyi/laravel-tencent007-captcha"><img src="https://poser.pugx.org/godruoyi/laravel-tencent007-captcha/downloads" alt="tencent captcha"></a>
+    <a href="https://packagist.org/packages/godruoyi/laravel-tencent007-captcha"><img src="https://poser.pugx.org/godruoyi/laravel-tencent007-captcha/license" alt="tencent captcha"></a>
 </p>
 
 ## 安装
