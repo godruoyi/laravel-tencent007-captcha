@@ -102,7 +102,7 @@ class ThrottleRequests extends BaseThrottleRequests
     {
         \Log::error('Tencent 007 not passed: '.$response->message());
 
-        throw new RequestNotPassedException(403, $response->message());
+        throw new RequestNotPassedException($response);
     }
 
     /**

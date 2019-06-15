@@ -10,12 +10,32 @@
 
 namespace Godruoyi\Tencent007\Exceptions;
 
+use Godruoyi\Tencent007\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RequestNotPassedException extends HttpException
 {
-    public function __construct($statusCode = 400, $message = 'Tencent 007 validate failure.')
+    /**
+     * Result for tencent validate response
+     *
+     * @var \Godruoyi\Tencent007\Response
+     */
+    protected $result;
+
+    public function __construct(Response $response)
     {
-        parent::__construct($statusCode, $message);
+        $this->result = $response;
+
+        parent::__construct(403, 'Tencent 007 validate failure.');
+    }
+
+    /**
+     * Get response
+     *
+     * @return \Godruoyi\Tencent007\Response
+     */
+    public function getResult()
+    {
+        return $this->result;
     }
 }

@@ -39,6 +39,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom($source, '007');
 
         $this->app->singleton(Client::class);
-        $this->app->alias('007', Client::class);
+        $this->app->singleton('007', Client::class);
     }
 }

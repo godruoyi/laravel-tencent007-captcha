@@ -1,4 +1,4 @@
-<h1 align="center"> laravel-tencent007-captcha </h1>
+<h1 align="center"> laravel tencent captcha </h1>
 
 <p align="center">
     <a href="https://github.styleci.io/repos/191917595"><img src="https://github.styleci.io/repos/191917595/shield?branch=master" alt="StyleCI"></a>
@@ -15,6 +15,8 @@ $ composer require godruoyi/laravel-tencent007-captcha -vvv
 ```
 
 ## 使用
+
+[查看 Demo](https://projects.godruoyi.com/007-demo/)
 
 1. 发布腾讯云防水墙配置文件。
 
@@ -103,26 +105,83 @@ $response->level();
 ```
 
 我们还提供了一个请求频率限制的中间件 `ThrottleRequests`，它继承了 Laravel 默认的 ThrottleRequests 中间件，
-可以用它来快速实现 `一分钟请求超过60次出现滑块验证` 的效果。
+可以用它来快速实现 `一分钟请求超过 60 次出现滑块验证` 的效果 —— [Demo](https://projects.godruoyi.com/007-demo/)
 
-> 为了使用该中间件，你需要在 `app/Http/Kernel.php` 中添加配置。
+为了使用该中间件，你需要在 `app/Http/Kernel.php` 中添加配置。
 
 ```php
-// app/Http/Kernel.php
-
 protected $routeMiddleware = [
     // ...
     'throttle.007' => \Godruoyi\Tencent007\Middlewares\ThrottleRequests::class,
 ];
 ```
 
-然后在你的路由文件中使用该中间件即可。
-
-> throttle.007:60,1 ———— 1 分钟请求超过 60 次，出现滑块验证
+然后在你的路由文件中使用该中间件即可（throttle.007:60,1 —— 表示 1 分钟请求超过 60 次，出现滑块验证）。
 
 ```php
 Route::post('users/register', 'UserRegisterController')->middleware('throttle.007:60,1');
 ```
+
+其实查看源码你就知道，当请求太多需要滑块验证时，我们会抛出一个 Exception。
+
+```php
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
+class NeedCaptchaAuthException extends HttpException
+{
+    public function __construct($statusCode = 429, $message = 'Need tencent captcha certification.')
+    {
+        parent::__construct($statusCode, $message);
+    }
+}
+```
+
+该 Exception 继承自 HttpException，Laravel 默认会返回一个状态码为 429 的响应。
+
+```http
+HTTP/1.1 429 Too Many Requests
+Server: nginx/1.11.9
+Content-Type: application/json
+Transfer-Encoding: chunked
+Cache-Control: no-cache, private
+Date: Sun, 24 Jun 2018 10:15:52 GMT
+Connection: keep-alive
+
+{"message":"Too Many Requests"}
+```
+
+如果你想自定义返回类型，你可在 `App\Exceptions\Handler.php` 中捕获并处理。
+
+```php
+namespace App\Exceptions;
+
+use Exception;
+use Godruoyi\Tencent007\Exceptions\NeedCaptchaAuthException;
+use Godruoyi\Tencent007\Exceptions\RequestNotPassedException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
+class Handler extends ExceptionHandler
+{
+    public function render($request, Exception $exception)
+    {
+        if ($exception instanceof NeedCaptchaAuthException) {
+            return response()->json([
+                'code' => -429,
+                'msg'  => '请先通过滑块验证'
+            ]);
+        } elseif ($exception instanceof RequestNotPassedException) {
+            return response()->json([
+                'code' => -403,
+                'msg'  => '非法用户'
+            ]);
+        }
+
+        return parent::render($request, $exception);
+    }
+}
+```
+
+前端需要根据接口返回的状态码做出相应处理。
 
 ## License
 
