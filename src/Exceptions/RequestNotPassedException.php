@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class RequestNotPassedException extends HttpException
 {
     /**
-     * Result for tencent validate response
+     * Result for tencent validate response.
      *
      * @var \Godruoyi\Tencent007\Response
      */
@@ -30,7 +30,7 @@ class RequestNotPassedException extends HttpException
     }
 
     /**
-     * Get response
+     * Get response.
      *
      * @return \Godruoyi\Tencent007\Response
      */
