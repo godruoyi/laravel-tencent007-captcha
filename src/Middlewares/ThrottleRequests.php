@@ -36,27 +36,15 @@ class ThrottleRequests extends BaseThrottleRequests
     {
         $key = $this->resolveRequestSignature($request);
 
-        if (($cache = config('007.cache')) > 0 && app(Cache::class)->has($key.':passed')) {
+        if ($this->existsInCacheForRequest($key, $request)) {
             return $next($request);
         }
 
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
 
-        if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)) {
-            $ticket = $request->get(config('007.request_key_map.ticket', 'ticket'));
-            $randstr = $request->get(config('007.request_key_map.randstr', 'randstr'));
-
-            if (empty($ticket) || empty($randstr)) {
-                return $this->buildNeedAuthException();
-            }
-
-            $checkResponse = Client::check($ticket, $randstr, $request->ip());
-
-            if ($checkResponse->level() >= config('007.level', 70)) {
-                return $this->buildNotPassedResponse($checkResponse);
-            }
-
-            $cache > 0 && $this->joinKeyToCache($key, $cache);
+        if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)
+            && ($response = $this->processTooManyAttempts())) {
+            return $response;
         }
 
         $this->hit($key, $decayMinutes);
@@ -71,6 +59,44 @@ class ThrottleRequests extends BaseThrottleRequests
     }
 
     /**
+     * Process too many request.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response|mixed|null
+     */
+    protected function processTooManyAttempts($request)
+    {
+        $ticket = $request->get(config('007.request_key_map.ticket', 'ticket'));
+        $randstr = $request->get(config('007.request_key_map.randstr', 'randstr'));
+
+        if (empty($ticket) || empty($randstr)) {
+            return $this->buildNeedAuthException();
+        }
+
+        $checkResponse = Client::check($ticket, $randstr, $request->ip());
+
+        if ($checkResponse->level() >= config('007.level', 70)) {
+            return $this->buildNotPassedResponse($checkResponse);
+        }
+
+        config('007.cache') > 0 && $this->joinKeyToCache($key, config('007.cache'));
+    }
+
+    /**
+     * Exists in cache for current request.
+     *
+     * @param string                   $key
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    protected function existsInCacheForRequest($key, $request)
+    {
+        return config('007.cache') > 0 && app(Cache::class)->has($key.':passed');
+    }
+
+    /**
      * Rewrite hit for subclass cover.
      *
      * @param string $key
@@ -78,7 +104,7 @@ class ThrottleRequests extends BaseThrottleRequests
      */
     protected function hit($key, $decayMinutes)
     {
-        return $this->limiter->hit($key, $decayMinutes * 60);
+        return $this->limiter->hit($key, $decayMinutes);
     }
 
     /**
@@ -100,8 +126,6 @@ class ThrottleRequests extends BaseThrottleRequests
      */
     protected function buildNotPassedResponse(Tencent007Response $response)
     {
-        \Log::error('Tencent 007 not passed: '.$response->message());
-
         throw new RequestNotPassedException($response);
     }
 
