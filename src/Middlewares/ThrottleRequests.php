@@ -43,7 +43,7 @@ class ThrottleRequests extends BaseThrottleRequests
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
 
         if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)
-            && ($response = $this->processTooManyAttempts($request))) {
+            && ($response = $this->processTooManyAttempts($request, $key))) {
             return $response;
         }
 
@@ -62,10 +62,11 @@ class ThrottleRequests extends BaseThrottleRequests
      * Process too many request.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string                   $key
      *
      * @return \Illuminate\Http\Response|mixed|null
      */
-    protected function processTooManyAttempts($request)
+    protected function processTooManyAttempts($request, $key)
     {
         $ticket = $request->get(config('007.request_key_map.ticket', 'ticket'));
         $randstr = $request->get(config('007.request_key_map.randstr', 'randstr'));
