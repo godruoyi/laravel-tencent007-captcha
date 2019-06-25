@@ -43,7 +43,7 @@ class ThrottleRequests extends BaseThrottleRequests
         $maxAttempts = $this->resolveMaxAttempts($request, $maxAttempts);
 
         if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayMinutes)
-            && ($response = $this->processTooManyAttempts())) {
+            && ($response = $this->processTooManyAttempts($request))) {
             return $response;
         }
 
