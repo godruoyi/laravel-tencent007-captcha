@@ -10,18 +10,16 @@
         "活动防刷"
     ],
     "homepage": "https://github.com/godruoyi/laravel-tencent007-captcha",
-    "authors": [
-        {
-            "name": "Godruoyi",
-            "email": "godruoyi@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "Godruoyi",
+        "email": "godruoyi@gmail.com"
+    }],
     "require": {
-        "laravel/framework": "5.*",
+        "laravel/framework": "5.* || ^6.0 || ^7.0 || ^8.0",
         "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
-        "laravel/framework": "^5.4",
+        "laravel/framework": "^5.4 || ^7.0",
         "mockery/mockery": "^1.2",
         "phpunit/phpunit": "~7",
         "orchestra/testbench": "^3.5"
