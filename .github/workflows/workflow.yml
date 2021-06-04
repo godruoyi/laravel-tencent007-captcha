@@ -27,7 +27,6 @@ jobs:
       with:
         php-version: ${{ matrix.php-versions }}
         tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}, composer
-      run: |
-        php-cs-fixer ./src
-        vendor/bin/phpunit
+    - name: PHP CS Fixer
+        run: php-cs-fixer
 
