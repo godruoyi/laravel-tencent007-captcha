@@ -1,0 +1,29 @@
+name: Main workflow
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+jobs:
+  run:
+    name: Run
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-versions: ['7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
