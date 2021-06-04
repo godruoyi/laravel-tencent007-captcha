@@ -28,5 +28,5 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}, composer
     - name: PHP CS Fixer
-      run: ./vendor/bin/php-cs-fixer fix ./
+      run: php-cs-fixer fix ./
 
