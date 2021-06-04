@@ -26,4 +26,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
+        tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}, composer
+        run: |
+          php-cs-fixer ./src
+          vendor/bin/phpunit
+
